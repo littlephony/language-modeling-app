@@ -3,6 +3,7 @@ from torch import nn
 from torch.distributions import Categorical
 import numpy as np
 
+
 class TextGenerationNet(nn.Module):
     def __init__(self, vocab_size, embed_dim, rnn_hidden_size):
         super().__init__()
@@ -23,6 +24,7 @@ class TextGenerationNet(nn.Module):
         hidden = torch.zeros(1, batch_size, self.rnn_hidden_size)
         cell = torch.zeros(1, batch_size, self.rnn_hidden_size)
         return hidden, cell
+
 
 class TextGenerationModel:
     def __init__(self):
