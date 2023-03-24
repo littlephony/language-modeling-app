@@ -55,4 +55,4 @@ class ErrorResponse(BaseModel):
         title='Is there error or not'
     )
     message: str = Field(..., example='', title='Error message')
-    traceback: str = Field(..., example='', title='Error traceback')
+    traceback: str = Field(None, example='', title='Error traceback')
