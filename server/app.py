@@ -1,33 +1,68 @@
 import uvicorn
 from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import RedirectResponse, JSONResponse
+
 from model import TextGenerationModel
-from pydantic import BaseModel
+from schema import (
+    GenerationInput, GenerationResponse,
+    GenerationResult, ErrorResponse
+)
+from exception_handler import (
+    validation_exception_handler,
+    exception_handler
+)
 
 
-app = FastAPI()
-model = TextGenerationModel()
+app = FastAPI(
+    title='Text Generation Model',
+    description='Generates text in the style of Jack London',
+    version='0.0.1',
+    terms_of_service=None,
+    contact=None,
+    license_info=None
+)
 
 
-class InputData(BaseModel):
-    input_prompt: str
-    generate_len: int
+app.add_exception_handler(
+    RequestValidationError, 
+    validation_exception_handler
+)
+app.add_exception_handler(
+    Exception, exception_handler
+)
 
 
-@app.get('/')
-async def hello():
-    return {"message": "Hello, World!"}
+@app.on_event('startup')
+async def startup_event():
+    '''
+    Initialize FastAPI and variables
+    '''
+    model = TextGenerationModel()
 
-@app.post('/predict')
+    app.package = {
+        'model': model
+    }
+
+
+@app.post(
+    '/api/predict',
+    response_model=GenerationResponse,
+    responses={
+        422: {'model': ErrorResponse},
+        500: {'model': ErrorResponse}
+    })
 async def predict(
-    input_data: InputData,
-    request: Request
+    request: Request,
+    body: GenerationInput
 ):
-    generated_prompt = model.generate(
-        input_prompt=input_data.input_prompt,
-        generate_len=input_data.generate_len
+    generated_prompt = app.package['model'].generate(
+        input_prompt=body.input_prompt,
+        generate_len=body.generate_len
     )
 
     return {"generated_prompt": generated_prompt}
+
 
 if __name__ == '__main__':
     uvicorn.run(app, host="0.0.0.0", port=8000)
