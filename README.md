@@ -68,7 +68,7 @@ $ curl -X 'POST' \
 }'
 ```
 
-To see the full documentation you should visit `/docs` endpoint.
+To see the full documentation you should visit the `/docs` endpoint.
 
 ## Planned changes
 
