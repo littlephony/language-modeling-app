@@ -75,7 +75,7 @@ To see the full documentation you should visit the `/docs` endpoint.
 I have the following changes planned for this project:
 
 1. Use a more complex model — perhaphs a transformer — that would be able to generate a more meaningful text.
-2. Add UI to make to application easier to use.
+2. Add UI to make the application easier to use.
 
 ## Sources and inspiration
 
